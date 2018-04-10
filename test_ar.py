@@ -17,9 +17,9 @@ else:
 
 timer=0
 while frame_captured:
-	frame_orig = frame.copy();
+	frame_orig = frame.copy()
         markers = detect_markers(frame)
-	found=[False,False,False];
+	found=[False,False,False]
 
         for marker in markers:
                 marker.highlite_marker(frame)
@@ -31,21 +31,31 @@ while frame_captured:
 			found[2]=True
 	
 	if found==[True,True,True]:
-		timer = timer +1;
+		timer = timer +1
 	else:
 		timer=0
 	
-	if timer==3:
-		break;
+	if timer==2:
+		break
 
         cv2.imshow('Test Frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         frame_captured, frame = capture.read()
 
+centers=[(0,0),(0,0),(0,0)]
 for marker in markers:
-	print(marker.center,"\n");
-	cv2.circle(frame_orig,marker.center,5,(0,0,255),-1)
+	if marker.id==1:
+		centers[0]=marker.center
+	if marker.id==3:
+		centers[1]=marker.center
+	if marker.id==7:
+		centers[2]=marker.center
+	
+for center in centers:
+	cv2.circle(frame_orig,center,5,(0,0,255),-1)
+	print(center,"\n")
+
 cv2.imshow('FOUND!',frame_orig)
 cv2.waitKey()
 # When everything done, release the capture
