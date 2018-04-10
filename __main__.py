@@ -3,6 +3,7 @@ import cv2
 from ar_markers import detect_markers, HammingMarker
 from cv2.cv2 import VideoCapture
 
+# INIZIALIZZAZIONE CAMERA
 print('Press "q" to quit')
 capture = cv2.VideoCapture(1)  # type: VideoCapture
 
@@ -14,6 +15,7 @@ if capture.isOpened():  # try to get the first frame
 else:
     frame_captured = False
 
+# CALIBRAZIONE TRAMITE MARKERS AR
 timer = 0
 while frame_captured:
     frame_orig = frame.copy()  # type: object
@@ -40,8 +42,14 @@ while frame_captured:
     cv2.imshow('Test Frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
     frame_captured, frame = capture.read()
 
+
+capture.release()
+cv2.destroyAllWindows()
+
+# TROVATI TUTTI I MARKER
 centers = [(0, 0), (0, 0), (0, 0)]
 for marker in markers:
     if marker.id == 1:
@@ -58,5 +66,4 @@ for center in centers:
 cv2.imshow('FOUND!', frame_orig)
 cv2.waitKey()
 # When everything done, release the capture
-capture.release()
 cv2.destroyAllWindows()
