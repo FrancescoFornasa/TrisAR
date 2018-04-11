@@ -97,7 +97,7 @@ def minimax(new_board, player):
         i = 0
         while i < len(moves):
             m = moves[i]
-            if m.score > best_score:
+            if m.score < best_score:
                 best_score = m.score
                 best_move = i
             i = i+1
