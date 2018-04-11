@@ -38,7 +38,7 @@ def empty_indexes(new_board):
     return res
 
 
-def minimax(new_board, player):
+def trova_mossa_migliore(new_board, player):
     # available spots
     avail_spots = empty_indexes(new_board)
 
@@ -69,10 +69,10 @@ def minimax(new_board, player):
 
         # if collect the score resulted from calling minimax on the opponent of the current player
         if player == aiPlayer:
-            result = minimax(new_board, huPlayer)
+            result = trova_mossa_migliore(new_board, huPlayer)
             move.score = result.score
         else:
-            result = minimax(new_board, aiPlayer)
+            result = trova_mossa_migliore(new_board, aiPlayer)
             move.score = result.score
 
         # reset the spot to empty
@@ -121,7 +121,7 @@ while True:
         print("\nHAI VINTO!\n")
         break
 
-    bestSpot = minimax(origBoard, aiPlayer)
+    bestSpot = trova_mossa_migliore(origBoard, aiPlayer)
     origBoard[bestSpot.index] = aiPlayer
 
     if winning(origBoard, aiPlayer):
