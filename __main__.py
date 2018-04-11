@@ -3,7 +3,6 @@ import cv2
 from ar_markers import detect_markers, HammingMarker
 from cv2.cv2 import VideoCapture
 import numpy as np
-import time
 
 # INIZIALIZZAZIONE CAMERA
 print('Press "q" to quit')
@@ -50,7 +49,7 @@ while frame_captured:
     frame_captured, frame = capture.read()
 
 
-#capture.release()
+# capture.release()
 cv2.destroyAllWindows()
 
 # TROVATI TUTTI I MARKER

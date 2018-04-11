@@ -52,7 +52,9 @@ def minimax(new_board, player):
         m.score = 10
         return m
     if len(avail_spots) == 0:
-        return 0
+        m = Move()
+        m.score = 0
+        return m
 
     # an array to collect all the objects
     moves = []
@@ -120,6 +122,8 @@ while True:
         break
 
     bestSpot = minimax(origBoard, aiPlayer)
+    origBoard[bestSpot.index] = aiPlayer
+
     if winning(origBoard, aiPlayer):
         print("\nHAI PERSO!\n")
         break
