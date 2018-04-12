@@ -122,8 +122,8 @@ while frame_captured:
         print("\nHAI VINTO!\n")
         break
 
-    mossa = ai.trova_mossa_migliore(board, aiPlayer)
-    board[mossa] = aiPlayer
+    #mossa = ai.trova_mossa_migliore(board, aiPlayer)
+    #board[mossa] = aiPlayer
 
     if ai.winning(board, aiPlayer):
         print("\nHAI PERSO!\n")

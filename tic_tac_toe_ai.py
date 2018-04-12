@@ -2,6 +2,8 @@
 huPlayer = 'O'  # human
 aiPlayer = 'X'  # ai
 
+test = False
+
 
 class Move:
     def __init__(self):
@@ -106,28 +108,27 @@ def trova_mossa_migliore(new_board, player):
     return moves[best_move]
 
 
-# this is the board flattened and filled with some values to easier asses the Artificial Intelligence.
+if test:
+    # this is the board flattened and filled with some values to easier asses the Artificial Intelligence.
+    origBoard = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
+    while True:
+        draw(origBoard)
 
-origBoard = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        scelta = input("\nInserisci la posizione : ")
+        origBoard[scelta] = huPlayer
 
-while True:
-    draw(origBoard)
+        if winning(origBoard, huPlayer):
+            print("\nHAI VINTO!\n")
+            break
 
-    scelta = input("\nInserisci la posizione : ")
-    origBoard[scelta] = huPlayer
+        bestSpot = trova_mossa_migliore(origBoard, aiPlayer)
+        origBoard[bestSpot.index] = aiPlayer
 
-    if winning(origBoard, huPlayer):
-        print("\nHAI VINTO!\n")
-        break
+        if winning(origBoard, aiPlayer):
+            print("\nHAI PERSO!\n")
+            break
 
-    bestSpot = trova_mossa_migliore(origBoard, aiPlayer)
-    origBoard[bestSpot.index] = aiPlayer
-
-    if winning(origBoard, aiPlayer):
-        print("\nHAI PERSO!\n")
-        break
-
-    if len(empty_indexes(origBoard)) == 0:
-        print("\nPAREGGIO!\n")
-        break
+        if len(empty_indexes(origBoard)) == 0:
+            print("\nPAREGGIO!\n")
+            break
