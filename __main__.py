@@ -4,6 +4,7 @@ from ar_markers import detect_markers, HammingMarker
 from cv2.cv2 import VideoCapture
 import numpy as np
 import tic_tac_toe_ai as ai
+import visione
 
 # Variabili gloabali
 huPlayer = 'O'  # human
@@ -84,8 +85,11 @@ cv2.destroyAllWindows()
 # COMPUTAZIONE OMOGRAFIA
 border = (30, 30)
 res_size = (640, 480)
+
+angoli_settori = []  # TODO CALCOLARLI
+dimensioni_settore = (0, 0)  # TODO CALCOLARLI
+
 dest = [(1+border[0], 1+border[1]), (res_size[0]+border[0], 1+border[1]), (1+border[0], res_size[1]+border[1]), (res_size[0]+border[0], res_size[1]+border[1])]
-print(dest, "\n")
 
 h, status = cv2.findHomography(np.asarray(centers), np.asarray(dest))
 
@@ -110,8 +114,8 @@ while frame_captured:
     if k == ord('q'):
         break
     if k == ord(' '):
-        # TODO PARSING DELL'IMMAGINE PER GUARDARE CONFIGURAZIONE BOARD
-        # board = parsing(warped)
+        # PARSING DELL'IMMAGINE PER GUARDARE CONFIGURAZIONE BOARD
+        board = visione.guarda_griglia(warped, angoli_settori, dimensioni_settore)
         print("\nmossa\n")
 
     if ai.winning(board, huPlayer):
