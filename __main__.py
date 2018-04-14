@@ -1,4 +1,5 @@
 from __future__ import print_function
+import operator
 import cv2
 from ar_markers import detect_markers, HammingMarker
 from cv2.cv2 import VideoCapture
@@ -13,7 +14,7 @@ aiPlayer = 'X'  # ai
 # INIZIALIZZAZIONE CAMERA
 print('Press "q" to quit or "r" to reset the calibration')
 
-capture = cv2.VideoCapture(1)  # type: VideoCapture
+capture = cv2.VideoCapture(0)  # type: VideoCapture
 
 # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 1366)
 # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 768)
@@ -86,9 +87,6 @@ cv2.destroyAllWindows()
 border = (30, 30)
 res_size = (640, 480)
 
-angoli_settori = []  # TODO CALCOLARLI
-dimensioni_settore = (0, 0)  # TODO CALCOLARLI
-
 dest = [(1+border[0], 1+border[1]), (res_size[0]+border[0], 1+border[1]), (1+border[0], res_size[1]+border[1]), (res_size[0]+border[0], res_size[1]+border[1])]
 
 h, status = cv2.findHomography(np.asarray(centers), np.asarray(dest))
@@ -102,12 +100,26 @@ cv2.destroyAllWindows()
 # WARPING REALTIME e INIZIO GIOCO
 board = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
+dimensioni_settore = (int(res_size[0]/4), int(res_size[1]/4))
+angoli_settori = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+
+angoli_settori[0] = (border[0]+int(dimensioni_settore[0]/2), border[1]+int(dimensioni_settore[1]/2))
+angoli_settori[1] = tuple(map(operator.add, angoli_settori[0], (int(dimensioni_settore[0]), 0)))
+angoli_settori[2] = tuple(map(operator.add, angoli_settori[1], (int(dimensioni_settore[0]), 0)))
+angoli_settori[3] = tuple(map(operator.add, angoli_settori[0], (0, int(dimensioni_settore[1]))))
+angoli_settori[4] = tuple(map(operator.add, angoli_settori[3], (int(dimensioni_settore[0]), 0)))
+angoli_settori[5] = tuple(map(operator.add, angoli_settori[4], (int(dimensioni_settore[0]), 0)))
+angoli_settori[6] = tuple(map(operator.add, angoli_settori[3], (0, int(dimensioni_settore[1]))))
+angoli_settori[7] = tuple(map(operator.add, angoli_settori[6], (int(dimensioni_settore[0]), 0)))
+angoli_settori[8] = tuple(map(operator.add, angoli_settori[7], (int(dimensioni_settore[0]), 0)))
+
+
 frame_captured, frame = capture.read()
 while frame_captured:
     warped = cv2.warpPerspective(frame, h, (res_size[0] + (2 * border[0]), res_size[1] + (2 * border[1])))
-    cv2.imshow('g', warped)
 
-    # TODO DISEGNA REALTA AUMENTATA
+    warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
+    cv2.imshow('GAME', warped)
 
     k = cv2.waitKey(1)
 
@@ -115,15 +127,17 @@ while frame_captured:
         break
     if k == ord(' '):
         # PARSING DELL'IMMAGINE PER GUARDARE CONFIGURAZIONE BOARD
-        board = visione.guarda_griglia(warped, angoli_settori, dimensioni_settore)
-        print("\nmossa\n")
+        nuova_board = visione.guarda_griglia(warped, board, angoli_settori, dimensioni_settore)
+        if nuova_board == -1:
+            continue
+
+        board = nuova_board
+        mossa = ai.trova_mossa_migliore(board, aiPlayer)
+        board[mossa.index] = aiPlayer
 
     if ai.winning(board, huPlayer):
         print("\nHAI VINTO!\n")
         break
-
-    #mossa = ai.trova_mossa_migliore(board, aiPlayer)
-    #board[mossa] = aiPlayer
 
     if ai.winning(board, aiPlayer):
         print("\nHAI PERSO!\n")
