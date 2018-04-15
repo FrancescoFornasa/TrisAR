@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import tic_tac_toe_ai as ai
+import operator
 
 soglia = 2  # soglia alta fa piu falsi positivi
 
@@ -68,6 +69,19 @@ def disegna(immagine, board, angoli_settori, dimensione_settore):
 
     return immagine
 
+
+def disegna_fine(immagine, giocatore, posizione_mossa, angoli_settori, dimensioni_settori):
+    if giocatore == 'X':
+        color = (0, 230, 230)
+    else:
+        color = (0, 230, 230)
+
+    punto1 = tuple(map(operator.add, angoli_settori[posizione_mossa[0]], (dimensioni_settori[0]/2, dimensioni_settori[1]/2)))
+    punto2 = tuple(map(operator.add, angoli_settori[posizione_mossa[1]], (dimensioni_settori[0]/2, dimensioni_settori[1]/2)))
+
+    immagine = cv2.line(immagine, punto1, punto2, color, 7)
+
+    return immagine
 
 
 

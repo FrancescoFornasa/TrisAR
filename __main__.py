@@ -14,7 +14,7 @@ aiPlayer = 'X'  # ai
 # INIZIALIZZAZIONE CAMERA
 print('Press "q" to quit or "r" to reset the calibration')
 
-capture = cv2.VideoCapture(0)  # type: VideoCapture
+capture = cv2.VideoCapture(1)  # type: VideoCapture
 
 # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 1366)
 # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 768)
@@ -135,20 +135,36 @@ while frame_captured:
         mossa = ai.trova_mossa_migliore(board, aiPlayer)
         board[mossa.index] = aiPlayer
 
-    if ai.winning(board, huPlayer):
-        print("\nHAI VINTO!\n")
+    controllo_vittoria = ai.winning(board, huPlayer)
+    if controllo_vittoria[0]:
+        capture.release()
+        cv2.destroyAllWindows()
+        warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
+        warped = visione.disegna_fine(warped, huPlayer, controllo_vittoria[1], angoli_settori, dimensioni_settore)
+        cv2.imshow("VITTORIA!", warped)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
         break
 
-    if ai.winning(board, aiPlayer):
-        print("\nHAI PERSO!\n")
+    controllo_vittoria = ai.winning(board, aiPlayer)
+    if controllo_vittoria[0]:
+        capture.release()
+        cv2.destroyAllWindows()
+        warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
+        warped = visione.disegna_fine(warped, aiPlayer, controllo_vittoria[1], angoli_settori, dimensioni_settore)
+        cv2.imshow("SCONFITTA!", warped)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
         break
 
     if len(ai.empty_indexes(board)) == 0:
-        print("\nPAREGGIO!\n")
+        capture.release()
+        cv2.destroyAllWindows()
+        warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
+        cv2.imshow("PAREGGIO!", warped)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
         break
 
     frame_captured, frame = capture.read()
 
-
-capture.release()
-cv2.destroyAllWindows()

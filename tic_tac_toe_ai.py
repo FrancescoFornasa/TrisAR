@@ -16,20 +16,24 @@ def draw(board):
 
 
 def winning(board, player):
-    if (
-            (board[0] == player and board[1] == player and board[2] == player) or
-            (board[3] == player and board[4] == player and board[5] == player) or
-            (board[6] == player and board[7] == player and board[8] == player) or
-            (board[0] == player and board[3] == player and board[6] == player) or
-            (board[1] == player and board[4] == player and board[7] == player) or
-            (board[2] == player and board[5] == player and board[8] == player) or
-            (board[0] == player and board[4] == player and board[8] == player) or
-            (board[2] == player and board[4] == player and board[6] == player)
-    ):
-        return True
+    if board[0] == player and board[1] == player and board[2] == player:
+        return True, (0, 2)
+    if board[3] == player and board[4] == player and board[5] == player:
+        return True, (3, 5)
+    if board[6] == player and board[7] == player and board[8] == player:
+        return True, (6, 8)
+    if board[0] == player and board[3] == player and board[6] == player:
+        return True, (0, 6)
+    if board[1] == player and board[4] == player and board[7] == player:
+        return True, (1, 7)
+    if board[2] == player and board[5] == player and board[8] == player:
+        return True, (2, 8)
+    if board[0] == player and board[4] == player and board[8] == player:
+        return True, (0, 8)
+    if board[2] == player and board[4] == player and board[6] == player:
+        return True, (2, 6)
 
-    else:
-        return False
+    return False, (0, 0)
 
 
 def empty_indexes(new_board):
@@ -45,14 +49,18 @@ def trova_mossa_migliore(new_board, player):
     avail_spots = empty_indexes(new_board)
 
     # checks for the terminal states such as win, lose, and tie and returning a value accordingly
-    if winning(new_board, huPlayer):
+    controllo_vittoria = winning(new_board, huPlayer)
+    if controllo_vittoria[0]:
         m = Move()
         m.score = -10
         return m
-    if winning(new_board, aiPlayer):
+
+    controllo_vittoria = winning(new_board, aiPlayer)
+    if controllo_vittoria[0]:
         m = Move()
         m.score = 10
         return m
+
     if len(avail_spots) == 0:
         m = Move()
         m.score = 0
