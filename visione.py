@@ -109,4 +109,3 @@ def disegna_fine(immagine, giocatore, posizione_mossa, angoli_settori, dimension
 
 
 
-

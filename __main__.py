@@ -10,6 +10,18 @@ import visione
 # Variabili gloabali
 huPlayer = 'O'  # human
 aiPlayer = 'X'  # ai
+mouseX = -1
+mouseY = -1
+
+
+def posizione_mouse(event, x, y, flag, param):
+    if event == cv2.EVENT_MOUSEMOVE:
+        global mouseX
+        mouseX = x
+        global mouseY
+        mouseY = y
+    return
+
 
 # INIZIALIZZAZIONE CAMERA
 print('Press "q" to quit or "r" to reset the calibration')
@@ -56,12 +68,13 @@ while frame_captured:
     while i < len(markers):
         if found[i]:
             markers[i].highlite_marker(frame)
-        i = i+1
+        i = i + 1
 
     if found == [True, True, True, True]:
         break
 
     cv2.imshow('CALIBRAZIONE', frame)
+    cv2.setMouseCallback('CALIBRAZIONE', posizione_mouse)
     k = cv2.waitKey(1)
     if k == ord('q'):
         break
@@ -70,8 +83,35 @@ while frame_captured:
         markers = [HammingMarker(0), HammingMarker(0), HammingMarker(0), HammingMarker(0)]
         centers = [(0, 0), (0, 0), (0, 0), (0, 0)]
 
-    frame_captured, frame = capture.read()
+    if k == ord('1'):
+        found[0] = True
+        centers[0] = (mouseX, mouseY)
+        contorno = np.array([(mouseX - 20, mouseY - 20), (mouseX + 20, mouseY - 20), (mouseX + 20, mouseY + 20),
+                             (mouseX - 20, mouseY + 20)])
+        markers[0] = HammingMarker(1, contorno)
 
+    if k == ord('3'):
+        found[1] = True
+        centers[1] = (mouseX, mouseY)
+        contorno = np.array([(mouseX - 20, mouseY - 20), (mouseX + 20, mouseY - 20), (mouseX + 20, mouseY + 20),
+                             (mouseX - 20, mouseY + 20)])
+        markers[1] = HammingMarker(3, contorno)
+
+    if k == ord('5'):
+        found[2] = True
+        centers[2] = (mouseX, mouseY)
+        contorno = np.array([(mouseX - 20, mouseY - 20), (mouseX + 20, mouseY - 20), (mouseX + 20, mouseY + 20),
+                             (mouseX - 20, mouseY + 20)])
+        markers[2] = HammingMarker(5, contorno)
+
+    if k == ord('7'):
+        found[3] = True
+        centers[3] = (mouseX, mouseY)
+        contorno = np.array([(mouseX - 20, mouseY - 20), (mouseX + 20, mouseY - 20), (mouseX + 20, mouseY + 20),
+                             (mouseX - 20, mouseY + 20)])
+        markers[3] = HammingMarker(7, contorno)
+
+    frame_captured, frame = capture.read()
 
 cv2.destroyAllWindows()
 
@@ -87,11 +127,12 @@ cv2.destroyAllWindows()
 border = (30, 30)
 res_size = (640, 480)
 
-dest = [(1+border[0], 1+border[1]), (res_size[0]+border[0], 1+border[1]), (1+border[0], res_size[1]+border[1]), (res_size[0]+border[0], res_size[1]+border[1])]
+dest = [(1 + border[0], 1 + border[1]), (res_size[0] + border[0], 1 + border[1]),
+        (1 + border[0], res_size[1] + border[1]), (res_size[0] + border[0], res_size[1] + border[1])]
 
 h, status = cv2.findHomography(np.asarray(centers), np.asarray(dest))
 
-warped = cv2.warpPerspective(frame_orig, h, (res_size[0]+(2*border[0]), res_size[1]+(2*border[1])))
+warped = cv2.warpPerspective(frame_orig, h, (res_size[0] + (2 * border[0]), res_size[1] + (2 * border[1])))
 
 cv2.imshow('WARP', warped)
 cv2.waitKey()
@@ -100,10 +141,10 @@ cv2.destroyAllWindows()
 # WARPING REALTIME e INIZIO GIOCO
 board = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-dimensioni_settore = (int(res_size[0]/4), int(res_size[1]/4))
+dimensioni_settore = (int(res_size[0] / 4), int(res_size[1] / 4))
 angoli_settori = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
-angoli_settori[0] = (border[0]+int(dimensioni_settore[0]/2), border[1]+int(dimensioni_settore[1]/2))
+angoli_settori[0] = (border[0] + int(dimensioni_settore[0] / 2), border[1] + int(dimensioni_settore[1] / 2))
 angoli_settori[1] = tuple(map(operator.add, angoli_settori[0], (int(dimensioni_settore[0]), 0)))
 angoli_settori[2] = tuple(map(operator.add, angoli_settori[1], (int(dimensioni_settore[0]), 0)))
 angoli_settori[3] = tuple(map(operator.add, angoli_settori[0], (0, int(dimensioni_settore[1]))))
@@ -112,7 +153,6 @@ angoli_settori[5] = tuple(map(operator.add, angoli_settori[4], (int(dimensioni_s
 angoli_settori[6] = tuple(map(operator.add, angoli_settori[3], (0, int(dimensioni_settore[1]))))
 angoli_settori[7] = tuple(map(operator.add, angoli_settori[6], (int(dimensioni_settore[0]), 0)))
 angoli_settori[8] = tuple(map(operator.add, angoli_settori[7], (int(dimensioni_settore[0]), 0)))
-
 
 frame_captured, frame = capture.read()
 while frame_captured:
@@ -167,4 +207,3 @@ while frame_captured:
         break
 
     frame_captured, frame = capture.read()
-
