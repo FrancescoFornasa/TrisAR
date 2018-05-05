@@ -6,7 +6,13 @@ import imutils
 import time
 
 soglia = 2  # soglia alta fa piu falsi positivi
-disegno_cerchio = cv2.imread('./rainbow.png', cv2.IMREAD_UNCHANGED)
+
+disegno_cerchio = cv2.imread('./assets/rainbow.png', cv2.IMREAD_UNCHANGED)
+
+disegno_x = np.zeros(39, np.ndarray)
+for i in range(0, 39):
+    filename = './assets/frames/f-'+str(i)+'.png'
+    disegno_x[i] = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
 
 
 def osserva_settore(roi):
@@ -48,11 +54,20 @@ def guarda_griglia(warped_frame, board, posizioni_angoli, dimensione_settore):
 
 
 def disegna_settore(immagine, pezzo, angolo_settore, dimensione_settore):
+
     if pezzo == 'X':
-        immagine = cv2.drawMarker(immagine,
-                                  (angolo_settore[0] + int(dimensione_settore[0] / 2),
-                                   angolo_settore[1] + int(dimensione_settore[1] / 2)),
-                                  (0, 0, 255), cv2.MARKER_TILTED_CROSS, int(dimensione_settore[0] / 2), 3)
+        # immagine = cv2.drawMarker(immagine,
+        #                          (angolo_settore[0] + int(dimensione_settore[0] / 2),
+        #                           angolo_settore[1] + int(dimensione_settore[1] / 2)),
+        #                          (0, 0, 255), cv2.MARKER_TILTED_CROSS, int(dimensione_settore[0] / 2), 3)
+        ind = int(time.time() * 9 % len(disegno_x))
+        x = disegno_x[ind]
+        x = x.copy()
+        x = cv2.resize(x, (dimensione_settore[0], dimensione_settore[1]))
+        regione = immagine[angolo_settore[1]:angolo_settore[1] + dimensione_settore[1], angolo_settore[0]:angolo_settore[0] + dimensione_settore[0], :]
+        regione = sovrapponi_immagini(regione, x)
+        immagine[angolo_settore[1]:angolo_settore[1] + dimensione_settore[1], angolo_settore[0]:angolo_settore[0] + dimensione_settore[0], :] = regione
+
     elif pezzo == 'O':
         cerchio = disegno_cerchio.copy()
         cerchio = imutils.rotate(cerchio, time.time() * 9 % 360)
@@ -60,10 +75,10 @@ def disegna_settore(immagine, pezzo, angolo_settore, dimensione_settore):
         regione = immagine[angolo_settore[1]:angolo_settore[1] + dimensione_settore[1], angolo_settore[0]:angolo_settore[0] + dimensione_settore[0], :]
 
         regione = sovrapponi_immagini(regione, cerchio)
-        #immagine = cv2.circle(immagine,
-                              #(angolo_settore[0] + int(dimensione_settore[0] / 2),
-                              # angolo_settore[1] + int(dimensione_settore[1] / 2)),
-                              #dimensione_settore[0] / 3, (0, 255, 0), 3)
+        # immagine = cv2.circle(immagine,
+        # (angolo_settore[0] + int(dimensione_settore[0] / 2),
+        # angolo_settore[1] + int(dimensione_settore[1] / 2)),
+        # dimensione_settore[0] / 3, (0, 255, 0), 3)
 
         immagine[angolo_settore[1]:angolo_settore[1] + dimensione_settore[1], angolo_settore[0]:angolo_settore[0] + dimensione_settore[0], :] = regione
 
@@ -115,18 +130,13 @@ def sovrapponi_immagini(bg, fg):
 
 
 if False:
-    rainbow = cv2.imread('/home/francesco/Desktop/rainbow.png', cv2.IMREAD_UNCHANGED)
-    mount = cv2.imread('/home/francesco/Desktop/mount.jpg', cv2.IMREAD_UNCHANGED)
+    gif = np.zeros(39, np.ndarray)
+    for i in range(1, 39):
+        filename = './assets/frames/f-'+str(i-1)+'.png'
+        gif[i] = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
 
-    # rainbow = cv2.resize(rainbow, (100, 100))
-    # mount = cv2.resize(mount, (100, 100))
-
-    cv2.imshow('a', mount)
-    cv2.imshow(' ', rainbow)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
-    while True:
-        rainbow_r = imutils.rotate(rainbow, time.time() * 9 % 360)
-        im = sovrapponi_immagini(mount, rainbow_r)
-        cv2.imshow('gg', im)
-        cv2.waitKey(1)
+    for k in range(1, 20):
+        for frame in gif:
+            cv2.imshow('', frame)
+            cv2.waitKey(50)
+        cv2.destroyAllWindows()
