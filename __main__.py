@@ -119,9 +119,9 @@ cv2.destroyAllWindows()
 for center in centers:
     cv2.circle(frame_orig, center, 1, (0, 0, 255), -1)
 
-cv2.imshow('FOUND!', frame_orig)
-cv2.waitKey()
-cv2.destroyAllWindows()
+#cv2.imshow('FOUND!', frame_orig)
+#cv2.waitKey()
+#cv2.destroyAllWindows()
 
 # COMPUTAZIONE OMOGRAFIA
 border = (30, 30)
@@ -134,9 +134,9 @@ h, status = cv2.findHomography(np.asarray(centers), np.asarray(dest))
 
 warped = cv2.warpPerspective(frame_orig, h, (res_size[0] + (2 * border[0]), res_size[1] + (2 * border[1])))
 
-cv2.imshow('WARP', warped)
-cv2.waitKey()
-cv2.destroyAllWindows()
+#cv2.imshow('WARP', warped)
+#cv2.waitKey()
+#cv2.destroyAllWindows()
 
 # WARPING REALTIME e INIZIO GIOCO
 board = [0, 1, 2, 3, 4, 5, 6, 7, 8]
