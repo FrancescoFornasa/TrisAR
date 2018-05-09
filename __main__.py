@@ -75,6 +75,7 @@ while frame_captured:
 
     cv2.imshow('CALIBRAZIONE', frame)
     cv2.setMouseCallback('CALIBRAZIONE', posizione_mouse)
+    cv2.moveWindow('CALIBRAZIONE', 30, 30)
     k = cv2.waitKey(1)
     if k == ord('q'):
         break
@@ -160,6 +161,7 @@ while frame_captured:
 
     warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
     cv2.imshow('GAME', warped)
+    cv2.moveWindow('GAME', 30, 30)
 
     k = cv2.waitKey(1)
 
@@ -182,6 +184,7 @@ while frame_captured:
         warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
         warped = visione.disegna_fine(warped, huPlayer, controllo_vittoria[1], angoli_settori, dimensioni_settore)
         cv2.imshow("VITTORIA!", warped)
+        cv2.moveWindow('VITTORIA!', 30, 30)
         cv2.waitKey()
         cv2.destroyAllWindows()
         break
@@ -193,6 +196,7 @@ while frame_captured:
         warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
         warped = visione.disegna_fine(warped, aiPlayer, controllo_vittoria[1], angoli_settori, dimensioni_settore)
         cv2.imshow("SCONFITTA!", warped)
+        cv2.moveWindow('SCONFITTA!', 30, 30)
         cv2.waitKey()
         cv2.destroyAllWindows()
         break
@@ -202,6 +206,7 @@ while frame_captured:
         cv2.destroyAllWindows()
         warped = visione.disegna(warped, board, angoli_settori, dimensioni_settore)
         cv2.imshow("PAREGGIO!", warped)
+        cv2.moveWindow('PAREGGIO!', 30, 30)
         cv2.waitKey()
         cv2.destroyAllWindows()
         break
